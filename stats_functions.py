@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import re
 import json
+from nltk import tokenize
 
 class Extractor(object):
 	"""
@@ -13,6 +14,7 @@ class Extractor(object):
 		self.text = text_in
 		with open('word_numbers.json') as fp:
 			self.word_list = json.load(fp)
+		self.important = ['million', u"\xA3", 'per cent', 'thousand']
 
 	def extract_stats_from_text(self):
 		"""
@@ -40,7 +42,6 @@ class Extractor(object):
 
 		return all_indices
 
-
 	def _extract_numbers(self):
 		"""
 		Use regex to extract all digits in piece of text
@@ -51,6 +52,51 @@ class Extractor(object):
 
 		return nums
 
+	def get_important(self):
+		"""
+		Function to check presence of important
+		:return:
+		"""
+		for w in self.important:
+			if w in self.text:
+				return True
+
+		return False
+
+class Ranker(object):
+	"""
+	Class to extract and rank sentences
+	"""
+	def __init__(self, text_in):
+		self.text = text_in
+
+	def extract_sentences(self):
+		"""
+		Use NLTK to extract sent
+		:return:
+		"""
+		#tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+		#sentences = tokenizer.tokenize(self.text)
+
+		sentences = tokenize.sent_tokenize(self.text)
+		return sentences
+
+	def get_sentence_ranking(self):
+		"""
+
+		:return:
+		"""
+		sentences = self.extract_sentences()
+		keep = []
+		for s in sentences:
+			ex= Extractor(s)
+			vals = ex.extract_stats_from_text()
+
+			if len(vals) > 0:
+				imp = ex.get_important()
+				keep.append([s, imp, vals])
+		return sorted(keep, key=lambda x:x[1], reverse=True)
+
 if __name__ == '__main__':
 	text_in = "The hon. Gentleman makes a reasonable point: 18 per cent. is " \
 	          "still too high. However, that figure of 18 per cent. is significantly down on the percentage seven or eight years ago. The figures then were 23.7 per cent. in the Crown court, down to 13 per cent. in the latest figures, and 31 per cent. in the magistrates courts, down to 18 per cent., as I have just mentioned. We are absolutely committed to reducing those figures further, and good case management is of course part of that process."
@@ -59,3 +105,7 @@ if __name__ == '__main__':
 	print([''.join(list(em.text)[np.max([0, n[0] - 5]):
 		np.min([len(em.text), n[1] + 5])]) for n
 		       in indices])
+
+	ra = Ranker(text_in)
+	sentences = ra.get_sentence_ranking()
+	print(sentences)
