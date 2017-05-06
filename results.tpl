@@ -16,6 +16,10 @@ body {
   padding: 10px;
   background-color: #fff;
 }
+h3 {
+  font-size: 1.3em;
+  margin-bottom: -5px;
+}
 .highlight {
   background-color: #ff0;
 }
@@ -35,7 +39,7 @@ function toggle_hidden(id) {
     <h2>{{debate}}</h2>
     {% for speech in batch %}
     <div class="speech">
-      <h2>{{speech.speaker}}</h2>
+      <h3>{{speech.speaker}}</h3>
       {% for before, match, after in speech.snippets %}
         <p class="match">
           {{before}}<span class="highlight">{{match}}</span>{{after}}
