@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
 
+from jinja2 import Environment, FileSystemLoader
 import lxml.etree
+import os.path
 import sys
 from stats_functions import Extractor
+from types import SimpleNamespace
+
+this_dir = os.path.dirname(__file__)
 
 
 def find_claims(paragraph):
@@ -27,12 +32,13 @@ def get_snippet(para, start, end):
         snipto = l
         ellipsis_post = ''
     
-    return (ellipsis_pre + para[snipfrom:start] + 
-        HIGHLIGHT + para[start:end] + NORMAL +
-        para[end:snipto] + ellipsis_post)
+    return (ellipsis_pre + para[snipfrom:start],
+         para[start:end], para[end:snipto] + ellipsis_post)
 
+def terminal_format_snippet(before, match, after):
+    return before + HIGHLIGHT + match + NORMAL + after
 
-def show_claims(speech):
+def check_speech(speech):
     speaker = speech.attrib.get('speakername', '[no speaker]')
     time = speech.attrib.get('time', '[no time]')
     claims = []
@@ -40,16 +46,45 @@ def show_claims(speech):
         for (start, end) in Extractor(para).extract_stats_from_text():
             claims.append(get_snippet(para, start, end))
     
-    if claims:
-        print(BOLD + speaker + NORMAL, 'at', time)
-        for snippet in claims:
-            print(snippet)
+    return SimpleNamespace(
+        speaker=speaker,
+        time=time,
+        snippets=claims,
+    )
+
+def show_claims(speech):
+    res = check_speech(speech)
+    if res.snippets:
+        print(BOLD + res.speaker + NORMAL, 'at', res.time)
+        for snippet in res.snippets:
+            print(terminal_format_snippet(*snippet))
         print()
 
 def check_hansard_file(path):
     tree = lxml.etree.parse(path)
-    for speech in tree.xpath('/publicwhip/speech')[:100]:
+    for speech in tree.xpath('/publicwhip/speech'):
         show_claims(speech)
+
+def check_hansard_files_htmlout(paths):
+    debates = []
+    for path in paths:
+        tree = lxml.etree.parse(path)
+        speech_res = []
+        for speech in tree.xpath('/publicwhip/speech'):
+            r = check_speech(speech)
+            if r.snippets:
+                speech_res.append(r)
+        debates.append((os.path.basename(path), speech_res))
+    
+    jinja_env = Environment(loader=FileSystemLoader(this_dir),
+                            autoescape=True)
+    template = jinja_env.get_template('results.tpl')
+    
+    output_file = os.path.join(this_dir, 'index.html')
+    with open(output_file, 'w', encoding='utf-8') as f:
+        template.stream(debates=debates).dump(f)
+    
+    
 
 def main(argv=None):
     if argv is None:
@@ -57,6 +92,9 @@ def main(argv=None):
     
     if len(argv) < 2:
         sys.exit("Usage: statclaims.py hansard/src/debates2016-01-12b.xml [...]")
+    
+    if argv[1] == '--html':
+        return check_hansard_files_htmlout(argv[2:])
     
     for path in argv[1:]:
         check_hansard_file(path)
