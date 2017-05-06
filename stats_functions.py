@@ -32,6 +32,7 @@ class Extractor(object):
 		Function to extract numerical related words
 		:return:
 		"""
+		#TODO instead of returning list of all, concatenate neighbouring indices
 		all_indices = []
 		for k,v in self.word_list.items():
 			for w in v:
@@ -65,7 +66,7 @@ class Extractor(object):
 
 class Ranker(object):
 	"""
-	Class to extract and rank sentences
+	Class to extract and rank sentences in text based on presence of number
 	"""
 	def __init__(self, text_in):
 		self.text = text_in
@@ -75,15 +76,12 @@ class Ranker(object):
 		Use NLTK to extract sent
 		:return:
 		"""
-		#tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
-		#sentences = tokenizer.tokenize(self.text)
-
 		sentences = tokenize.sent_tokenize(self.text)
 		return sentences
 
 	def get_sentence_ranking(self):
 		"""
-
+		Find all the sentences containing a number and return
 		:return:
 		"""
 		sentences = self.extract_sentences()
