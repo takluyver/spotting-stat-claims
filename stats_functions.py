@@ -22,7 +22,7 @@ class Extractor(object):
 		nums = self._extract_numbers()
 		nums.extend(self._extract_numberwords())
 		nums = sorted(nums, key =lambda x:x[0])
-		print([''.join(list(self.text)[n[0]:n[1]]) for n in nums])
+
 		return nums
 
 	def _extract_numberwords(self):
@@ -34,21 +34,12 @@ class Extractor(object):
 		for k,v in self.word_list.items():
 			for w in v:
 				if w in self.text:
-					word_find = re.finditer(w, self.text)
+					word_find = re.finditer('\\b(%s)\\b' % w, self.text)
 					word_inds = [(m.start(0), m.end(0)) for m in word_find]
 					all_indices.extend(word_inds)
 
 		return all_indices
 
-	def _extract_char(self):
-		"""
-		Use regex to extract all digits in piece of text
-		:return: initial index
-		"""
-		nums = [(m.start(0), m.end(0)) for m in re.finditer(
-			r"[+-]?\d+(?:\.\d+)?", self.text)]
-
-		return nums
 
 	def _extract_numbers(self):
 		"""
@@ -65,4 +56,6 @@ if __name__ == '__main__':
 	          "still too high. However, that figure of 18 per cent. is significantly down on the percentage seven or eight years ago. The figures then were 23.7 per cent. in the Crown court, down to 13 per cent. in the latest figures, and 31 per cent. in the magistrates courts, down to 18 per cent., as I have just mentioned. We are absolutely committed to reducing those figures further, and good case management is of course part of that process."
 	em = Extractor(text_in)
 	indices = em.extract_stats_from_text()
-	print(indices)
+	print([''.join(list(em.text)[np.max([0, n[0] - 5]):
+		np.min([len(em.text), n[1] + 5])]) for n
+		       in indices])
