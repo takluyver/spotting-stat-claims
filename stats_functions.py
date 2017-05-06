@@ -48,6 +48,7 @@ class Extractor(object):
 		Use regex to extract all digits in piece of text
 		:return: initial index
 		"""
+		# TODO: problem with date hits and page hits
 		nums = [(m.start(0), m.end(0)) for m in re.finditer(
 			r"[+-]?\d+(?:\.\d+)?", self.text)]
 
