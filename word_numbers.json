@@ -1,8 +1,7 @@
 {
-  "cardinal_words": ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty", "twenty-one", "twenty-two", "twenty-three", "twenty-four", "twenty-five", "twenty-six", "twenty-seven", "twenty-eight", "twenty-nine", "thirty", "thirty-one", "forty", "fifty", "sixty", "seventy", "eighty", "ninety", "one hundred", "five hundred", "one thousand", "one thousand five hundred", " or fifteen hundred", "one hundred thousand", "one million"],
-  "ordinal_words": ["first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh", "twelfth", "thirteenth", "fourteenth", "fifteenth", "sixteenth", "seventeenth", "eighteenth", "nineteenth", "twentieth", "twenty-first", "twenty-second", "twenty-third", "twenty-fourth", "twenty-fifth", "twenty-sixth", "twenty-seventh", "twenty-eighth", "twenty-ninth", "thirtieth", "thirty-first", "fortieth", "fiftieth", "sixtieth", "seventieth", "eightieth", "ninetieth", "hundredth", "five hundredth", "thousandth", "one thousand five hundredth", "hundred thousandth", "millionth"],
+  "cardinal_words": ["hundred", "thousand", "million", "trillion"],
   "fraction_words": ["one third", "three fourths", "five sixths", "one half", "three halves"],
-  "noun_numbers": ["average", "billion", "dozen", "percent", ],
-  "verb_numbers": ["calculate", "generate", "count", "waste", "increase", "decrease", "drop"],
+  "noun_numbers": ["average", "billion", "dozen", "percent", "fraction", "greater than", "factor", "greater", "less", "less than", "times", "sum"],
+  "verb_numbers": ["calculate", "generate", "count", "waste", "increase", "decrease", "drop", "multiply"],
   "symbol_numbers": ["%", "£", "$"]
 }
