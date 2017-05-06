@@ -3,7 +3,7 @@
 <html>
 <head>
 <meta charset="utf-8" />
-<title>Dataset Index</title>
+<title>Statistical claims found</title>
 <style>
 body {
   font-family: sans-serif;
